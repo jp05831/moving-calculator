@@ -143,10 +143,9 @@ export default function StepQuote({ formData, updateFormData, onNext, onBack }: 
 
         <p className="text-center text-xs text-slate-400 mt-4 leading-relaxed">
           By submitting, you agree to our{' '}
-          <a href="/terms" className="text-blue-500 hover:underline">Terms</a>
+          <a href="/terms" className="text-blue-500 hover:underline">Terms of Service</a>
           {' '}and{' '}
           <a href="/privacy" className="text-blue-500 hover:underline">Privacy Policy</a>.
-          <br />We&apos;ll never spam or share your info.
         </p>
 
         <button
