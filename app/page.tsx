@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Truck } from 'lucide-react';
 
 // Step components
 import StepFrom from './components/StepFrom';
@@ -110,9 +111,12 @@ export default function Home() {
     <div className="min-h-screen">
       {/* Header */}
       <header className="py-4 px-4 glass sticky top-0 z-50 border-b border-white/20">
-        <div className="max-w-4xl mx-auto flex items-center justify-center">
+        <div className="max-w-4xl mx-auto flex items-center justify-center gap-3">
+          <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center shadow-lg shadow-red-500/25">
+            <Truck className="w-6 h-6 text-white" />
+          </div>
           <h1 className="text-2xl font-bold tracking-tight">
-            <span className="text-blue-800">Freedom</span>
+            <span className="text-red-600">Freedom</span>
             <span className="text-slate-800"> Movers</span>
           </h1>
         </div>

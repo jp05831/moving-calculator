@@ -12,7 +12,7 @@ export default function PrivacyPage() {
               <Truck className="w-6 h-6 text-white" />
             </div>
             <h1 className="text-2xl font-bold tracking-tight">
-              <span className="text-blue-800">Freedom</span>
+              <span className="text-red-600">Freedom</span>
               <span className="text-slate-800"> Movers</span>
             </h1>
           </Link>

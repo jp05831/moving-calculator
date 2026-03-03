@@ -1,11 +1,16 @@
+import { Truck } from 'lucide-react';
+
 export default function Footer() {
   return (
     <footer className="py-8 px-4 mt-12">
       <div className="max-w-xl mx-auto">
         {/* Logo */}
-        <div className="flex items-center justify-center mb-4">
+        <div className="flex items-center justify-center gap-2 mb-4">
+          <div className="w-8 h-8 bg-gradient-to-br from-red-500 to-red-600 rounded-lg flex items-center justify-center">
+            <Truck className="w-4 h-4 text-white" />
+          </div>
           <span className="text-lg font-bold">
-            <span className="text-blue-800">Freedom</span>
+            <span className="text-red-600">Freedom</span>
             <span className="text-slate-800"> Movers</span>
           </span>
         </div>
