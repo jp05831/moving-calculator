@@ -1,4 +1,3 @@
-import { Truck } from 'lucide-react';
 import Link from 'next/link';
 
 export default function TermsPage() {
@@ -6,11 +5,8 @@ export default function TermsPage() {
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
       <header className="py-4 px-4 bg-white border-b border-slate-200 sticky top-0 z-50">
-        <div className="max-w-4xl mx-auto flex items-center justify-center gap-3">
-          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-            <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center shadow-lg shadow-red-500/25">
-              <Truck className="w-6 h-6 text-white" />
-            </div>
+        <div className="max-w-4xl mx-auto flex items-center justify-center">
+          <Link href="/" className="hover:opacity-80 transition-opacity">
             <h1 className="text-2xl font-bold tracking-tight">
               <span className="text-blue-800">Freedom</span>
               <span className="text-slate-800"> Movers</span>
