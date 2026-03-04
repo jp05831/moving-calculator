@@ -124,7 +124,7 @@ export default function PrivacyPage() {
             <h2>15. Contact Information</h2>
             <p>
               Freedom Movers LLC<br />
-              <a href="mailto:info@movescout.net" className="text-blue-600 hover:underline">info@movescout.net</a>
+              <a href="mailto:info@movescout.net" className="text-blue-600 hover:underline">info@freedommovers.co</a>
             </p>
           </div>
 
