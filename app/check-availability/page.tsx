@@ -25,13 +25,12 @@ export default function CheckAvailability() {
     setPhone(formatPhone(e.target.value));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!consent) return;
 
     setSubmitting(true);
 
-    // Save lead data to localStorage under separate key
     const lead = {
       zip: zip.trim(),
       moveDate,
@@ -43,10 +42,12 @@ export default function CheckAvailability() {
     existingLeads.push(lead);
     localStorage.setItem('availability-leads', JSON.stringify(existingLeads));
 
-    // Email lead to info@movescout.net
-    submitAvailabilityLead(lead).catch(() => {});
-
-    // Redirect to success page
+    // POST to Google Sheets webhook, then redirect
+    try {
+      await submitAvailabilityLead(lead);
+    } catch {
+      // Don't block redirect on failure
+    }
     router.push('/success');
   };
 

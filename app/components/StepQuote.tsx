@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { FormData } from '../types';
 import { submitCalcLead } from '../submit';
 import { Tag, Zap, Lock, ArrowRight, MapPin, Calendar, Package } from 'lucide-react';
@@ -135,10 +136,12 @@ function formatPhone(value: string): string {
 }
 
 export default function StepQuote({ formData, updateFormData, onNext, onBack }: Props) {
+  const router = useRouter();
   const [name, setName] = useState(formData.fullName);
   const [email, setEmail] = useState(formData.email);
   const [phone, setPhone] = useState(formData.phone);
   const [isVisible, setIsVisible] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     // Trigger animation after mount
@@ -153,9 +156,10 @@ export default function StepQuote({ formData, updateFormData, onNext, onBack }: 
 
   const discount = 600;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (name.trim() && email.trim() && phone.trim()) {
+      setSubmitting(true);
       const updatedData = { 
         fullName: name.trim(), 
         email: email.trim(), 
@@ -163,7 +167,6 @@ export default function StepQuote({ formData, updateFormData, onNext, onBack }: 
       };
       updateFormData(updatedData);
 
-      // Save calc lead data
       const lead = {
         ...formData,
         ...updatedData,
@@ -174,10 +177,13 @@ export default function StepQuote({ formData, updateFormData, onNext, onBack }: 
       existingLeads.push(lead);
       localStorage.setItem('calc-leads', JSON.stringify(existingLeads));
 
-      // Email lead to info@movescout.net
-      submitCalcLead(lead).catch(() => {});
-
-      onNext();
+      // POST to Google Sheets webhook, then redirect
+      try {
+        await submitCalcLead(lead);
+      } catch {
+        // Don't block redirect on failure
+      }
+      router.push('/success');
     }
   };
 
