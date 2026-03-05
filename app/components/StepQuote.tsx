@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import { FormData } from '../types';
-import { WEBHOOK_URL } from '../config';
+import { submitCalcLead } from '../submit';
 import { Tag, Zap, Lock, ArrowRight, MapPin, Calendar, Package } from 'lucide-react';
 
 interface Props {
@@ -174,15 +174,8 @@ export default function StepQuote({ formData, updateFormData, onNext, onBack }: 
       existingLeads.push(lead);
       localStorage.setItem('calc-leads', JSON.stringify(existingLeads));
 
-      // Send to webhook if configured
-      if (WEBHOOK_URL) {
-        fetch(WEBHOOK_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ source: 'calculator', ...lead }),
-        }).catch(() => {});
-      }
+      // Email lead to info@movescout.net
+      submitCalcLead(lead).catch(() => {});
 
       onNext();
     }

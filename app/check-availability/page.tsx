@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { MapPin, Calendar, Phone, CheckCircle } from 'lucide-react';
-import { WEBHOOK_URL } from '../config';
+import { submitAvailabilityLead } from '../submit';
 import Footer from '../components/Footer';
 
 export default function CheckAvailability() {
@@ -43,15 +43,8 @@ export default function CheckAvailability() {
     existingLeads.push(lead);
     localStorage.setItem('availability-leads', JSON.stringify(existingLeads));
 
-    // Send to webhook if configured
-    if (WEBHOOK_URL) {
-      fetch(WEBHOOK_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ source: 'availability', ...lead }),
-      }).catch(() => {});
-    }
+    // Email lead to info@movescout.net
+    submitAvailabilityLead(lead).catch(() => {});
 
     // Redirect to success page
     router.push('/success');
