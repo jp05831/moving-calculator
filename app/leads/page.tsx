@@ -42,12 +42,12 @@ export default function Leads() {
     }
   };
 
-  const exportCSV = (data: Record<string, unknown>[], filename: string) => {
+  const exportCSV = (data: (CalcLead | AvailabilityLead)[], filename: string) => {
     if (data.length === 0) return;
     const headers = Object.keys(data[0]);
     const csv = [
       headers.join(','),
-      ...data.map(row => headers.map(h => `"${String(row[h] ?? '').replace(/"/g, '""')}"`).join(','))
+      ...data.map(row => headers.map(h => `"${String((row as unknown as Record<string, unknown>)[h] ?? '').replace(/"/g, '""')}"`).join(','))
     ].join('\n');
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
