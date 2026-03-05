@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { FormData } from '../page';
+import { FormData } from '../types';
 import { ChevronLeft, ChevronRight, Calendar, HelpCircle } from 'lucide-react';
 
 interface Props {

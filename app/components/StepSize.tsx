@@ -1,6 +1,6 @@
 'use client';
 
-import { FormData } from '../page';
+import { FormData } from '../types';
 import { Home, Building, Building2, Package, Check } from 'lucide-react';
 
 interface Props {

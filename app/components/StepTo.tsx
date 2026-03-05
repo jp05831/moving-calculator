@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { FormData } from '../page';
+import { FormData } from '../types';
 import { MapPin } from 'lucide-react';
 import CityAutocomplete from './CityAutocomplete';
 

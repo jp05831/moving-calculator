@@ -1,6 +1,6 @@
 'use client';
 
-import { FormData } from '../page';
+import { FormData } from '../types';
 import { CheckCircle, Phone, Mail, Clock, PartyPopper } from 'lucide-react';
 
 interface Props {

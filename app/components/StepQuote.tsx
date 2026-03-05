@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import { FormData } from '../page';
+import { FormData } from '../types';
 import { Tag, Zap, Lock, ArrowRight, MapPin, Calendar, Package } from 'lucide-react';
 
 interface Props {
@@ -155,11 +155,24 @@ export default function StepQuote({ formData, updateFormData, onNext, onBack }: 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (name.trim() && email.trim() && phone.trim()) {
-      updateFormData({ 
+      const updatedData = { 
         fullName: name.trim(), 
         email: email.trim(), 
         phone: phone.trim() 
-      });
+      };
+      updateFormData(updatedData);
+
+      // Save calc lead data to localStorage
+      const lead = {
+        ...formData,
+        ...updatedData,
+        distance,
+        submittedAt: new Date().toISOString(),
+      };
+      const existingLeads = JSON.parse(localStorage.getItem('calc-leads') || '[]');
+      existingLeads.push(lead);
+      localStorage.setItem('calc-leads', JSON.stringify(existingLeads));
+
       onNext();
     }
   };
