@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import { FormData } from '../types';
+import { WEBHOOK_URL } from '../config';
 import { Tag, Zap, Lock, ArrowRight, MapPin, Calendar, Package } from 'lucide-react';
 
 interface Props {
@@ -162,7 +163,7 @@ export default function StepQuote({ formData, updateFormData, onNext, onBack }: 
       };
       updateFormData(updatedData);
 
-      // Save calc lead data to localStorage
+      // Save calc lead data
       const lead = {
         ...formData,
         ...updatedData,
@@ -172,6 +173,16 @@ export default function StepQuote({ formData, updateFormData, onNext, onBack }: 
       const existingLeads = JSON.parse(localStorage.getItem('calc-leads') || '[]');
       existingLeads.push(lead);
       localStorage.setItem('calc-leads', JSON.stringify(existingLeads));
+
+      // Send to webhook if configured
+      if (WEBHOOK_URL) {
+        fetch(WEBHOOK_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ source: 'calculator', ...lead }),
+        }).catch(() => {});
+      }
 
       onNext();
     }

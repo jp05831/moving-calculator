@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { MapPin, Calendar, Phone, CheckCircle } from 'lucide-react';
+import { WEBHOOK_URL } from '../config';
 import Footer from '../components/Footer';
 
 export default function CheckAvailability() {
@@ -41,6 +42,16 @@ export default function CheckAvailability() {
     const existingLeads = JSON.parse(localStorage.getItem('availability-leads') || '[]');
     existingLeads.push(lead);
     localStorage.setItem('availability-leads', JSON.stringify(existingLeads));
+
+    // Send to webhook if configured
+    if (WEBHOOK_URL) {
+      fetch(WEBHOOK_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ source: 'availability', ...lead }),
+      }).catch(() => {});
+    }
 
     // Redirect to success page
     router.push('/success');
