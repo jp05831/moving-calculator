@@ -5,10 +5,12 @@ import { useRouter } from 'next/navigation';
 import { MapPin, Calendar, Phone, CheckCircle } from 'lucide-react';
 import { submitAvailabilityLead } from '../submit';
 import Footer from '../components/Footer';
+import CityAutocomplete from '../components/CityAutocomplete';
 
 export default function CheckAvailability() {
   const router = useRouter();
   const [zip, setZip] = useState('');
+  const [location, setLocation] = useState('');
   const [moveDate, setMoveDate] = useState('');
   const [phone, setPhone] = useState('');
   const [consent, setConsent] = useState(false);
@@ -33,6 +35,7 @@ export default function CheckAvailability() {
 
     const lead = {
       zip: zip.trim(),
+      location: location.trim(),
       moveDate,
       phone: phone.trim(),
       submittedAt: new Date().toISOString(),
@@ -81,24 +84,16 @@ export default function CheckAvailability() {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="p-8 space-y-5">
-            {/* Zip Code */}
+            {/* Location */}
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                Zip Code
+                Your Location
               </label>
-              <div className="relative">
-                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                <input
-                  type="text"
-                  placeholder="Enter your zip code"
-                  value={zip}
-                  onChange={(e) => setZip(e.target.value.replace(/\D/g, '').slice(0, 5))}
-                  className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border-2 border-slate-200 rounded-xl focus:border-blue-500 focus:bg-white outline-none transition-all text-slate-800 placeholder:text-slate-400"
-                  required
-                  pattern="\d{5}"
-                  title="Please enter a valid 5-digit zip code"
-                />
-              </div>
+              <CityAutocomplete
+                value={location}
+                onChange={setLocation}
+                placeholder="Enter your city..."
+              />
             </div>
 
             {/* Move Date */}
