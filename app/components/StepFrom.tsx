@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { FormData } from '../types';
-import { Shield, Star, BadgeCheck, Sparkles } from 'lucide-react';
+import { Shield, Star, BadgeCheck } from 'lucide-react';
 import CityAutocomplete from './CityAutocomplete';
 
 interface Props {
@@ -25,20 +25,12 @@ export default function StepFrom({ formData, updateFormData, onNext, quotesReque
 
   return (
     <div className="bg-white rounded-xl shadow-lg shadow-slate-200/40 p-8 border border-slate-200">
-      {/* Badge */}
-      <div className="flex justify-center mb-6">
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 text-blue-600 text-sm font-medium">
-          <Sparkles className="w-4 h-4" />
-          Instant Quote Calculator
-        </span>
-      </div>
-
       <div className="text-center mb-8">
         <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-3 tracking-tight">
           Calculate Your Moving Cost
         </h2>
-        <p className="text-slate-600 text-lg">
-          Where are you moving <span className="font-semibold text-slate-800">from</span>?
+        <p className="text-slate-600 text-lg font-medium">
+          Where are you moving from?
         </p>
       </div>
 

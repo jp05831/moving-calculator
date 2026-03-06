@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { FormData } from '../types';
 import { submitCalcLead } from '../submit';
-import { Tag, Zap, Lock, ArrowRight, MapPin, Calendar, Package } from 'lucide-react';
+import { Lock, ArrowRight, MapPin, Package, Calendar } from 'lucide-react';
 
 interface Props {
   formData: FormData;
@@ -13,9 +13,7 @@ interface Props {
   onBack: () => void;
 }
 
-// Major US city coordinates for distance calculation
 const cityCoordinates: Record<string, { lat: number; lng: number }> = {
-  // Northeast
   'new york': { lat: 40.7128, lng: -74.0060 },
   'nyc': { lat: 40.7128, lng: -74.0060 },
   'boston': { lat: 42.3601, lng: -71.0589 },
@@ -24,8 +22,6 @@ const cityCoordinates: Record<string, { lat: number; lng: number }> = {
   'baltimore': { lat: 39.2904, lng: -76.6122 },
   'washington': { lat: 38.9072, lng: -77.0369 },
   'dc': { lat: 38.9072, lng: -77.0369 },
-  
-  // Southeast
   'miami': { lat: 25.7617, lng: -80.1918 },
   'orlando': { lat: 28.5383, lng: -81.3792 },
   'tampa': { lat: 27.9506, lng: -82.4572 },
@@ -36,8 +32,6 @@ const cityCoordinates: Record<string, { lat: number; lng: number }> = {
   'nashville': { lat: 36.1627, lng: -86.7816 },
   'memphis': { lat: 35.1495, lng: -90.0490 },
   'new orleans': { lat: 29.9511, lng: -90.0715 },
-  
-  // Midwest
   'chicago': { lat: 41.8781, lng: -87.6298 },
   'detroit': { lat: 42.3314, lng: -83.0458 },
   'cleveland': { lat: 41.4993, lng: -81.6944 },
@@ -48,8 +42,6 @@ const cityCoordinates: Record<string, { lat: number; lng: number }> = {
   'st louis': { lat: 38.6270, lng: -90.1994 },
   'kansas city': { lat: 39.0997, lng: -94.5786 },
   'omaha': { lat: 41.2565, lng: -95.9345 },
-  
-  // Southwest
   'dallas': { lat: 32.7767, lng: -96.7970 },
   'houston': { lat: 29.7604, lng: -95.3698 },
   'san antonio': { lat: 29.4241, lng: -98.4936 },
@@ -59,8 +51,6 @@ const cityCoordinates: Record<string, { lat: number; lng: number }> = {
   'albuquerque': { lat: 35.0844, lng: -106.6504 },
   'las vegas': { lat: 36.1699, lng: -115.1398 },
   'denver': { lat: 39.7392, lng: -104.9903 },
-  
-  // West Coast
   'los angeles': { lat: 34.0522, lng: -118.2437 },
   'la': { lat: 34.0522, lng: -118.2437 },
   'san diego': { lat: 32.7157, lng: -117.1611 },
@@ -70,8 +60,6 @@ const cityCoordinates: Record<string, { lat: number; lng: number }> = {
   'sacramento': { lat: 38.5816, lng: -121.4944 },
   'portland': { lat: 45.5152, lng: -122.6784 },
   'seattle': { lat: 47.6062, lng: -122.3321 },
-  
-  // Other
   'salt lake city': { lat: 40.7608, lng: -111.8910 },
   'oklahoma city': { lat: 35.4676, lng: -97.5164 },
   'louisville': { lat: 38.2527, lng: -85.7585 },
@@ -84,48 +72,34 @@ const cityCoordinates: Record<string, { lat: number; lng: number }> = {
 
 function findCityCoordinates(cityInput: string): { lat: number; lng: number } | null {
   const normalized = cityInput.toLowerCase().trim();
-  
-  // Direct match
-  if (cityCoordinates[normalized]) {
-    return cityCoordinates[normalized];
-  }
-  
-  // Try to find partial match (e.g., "Dallas, TX" should match "dallas")
+  if (cityCoordinates[normalized]) return cityCoordinates[normalized];
   for (const [city, coords] of Object.entries(cityCoordinates)) {
     if (normalized.includes(city) || city.includes(normalized.split(',')[0].trim())) {
       return coords;
     }
   }
-  
   return null;
 }
 
 function calculateDistance(from: string, to: string): number {
   const fromCoords = findCityCoordinates(from);
   const toCoords = findCityCoordinates(to);
-  
   if (!fromCoords || !toCoords) {
-    // Fallback: estimate based on string difference (rough approximation)
     const hash = (from + to).split('').reduce((a, b) => {
       a = ((a << 5) - a) + b.charCodeAt(0);
       return a & a;
     }, 0);
     return Math.abs(hash % 1500) + 300;
   }
-  
-  // Haversine formula for distance calculation
-  const R = 3959; // Earth's radius in miles
+  const R = 3959;
   const dLat = (toCoords.lat - fromCoords.lat) * Math.PI / 180;
   const dLng = (toCoords.lng - fromCoords.lng) * Math.PI / 180;
-  const a = 
+  const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
     Math.cos(fromCoords.lat * Math.PI / 180) * Math.cos(toCoords.lat * Math.PI / 180) *
     Math.sin(dLng / 2) * Math.sin(dLng / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  const straightLineDistance = R * c;
-  
-  // Add ~20% for road distance vs straight line
-  return Math.round(straightLineDistance * 1.2);
+  return Math.round(R * c * 1.2);
 }
 
 function formatPhone(value: string): string {
@@ -140,30 +114,71 @@ export default function StepQuote({ formData, updateFormData, onNext, onBack }: 
   const [name, setName] = useState(formData.fullName);
   const [email, setEmail] = useState(formData.email);
   const [phone, setPhone] = useState(formData.phone);
-  const [isVisible, setIsVisible] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [phase, setPhase] = useState<'calculating' | 'reveal'>('calculating');
+  const [progress, setProgress] = useState(0);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
-  useEffect(() => {
-    // Trigger animation after mount
-    const timer = setTimeout(() => setIsVisible(true), 100);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const distance = useMemo(() => 
+  const distance = useMemo(() =>
     calculateDistance(formData.fromCity, formData.toCity),
     [formData.fromCity, formData.toCity]
   );
 
+  const baseEstimate = useMemo(() => {
+    const base = distance * 1.2 + 800;
+    return Math.round(base / 50) * 50;
+  }, [distance]);
+
   const discount = 600;
+
+  // Calculating animation
+  useEffect(() => {
+    if (phase !== 'calculating') return;
+    const duration = 3000;
+    const interval = 30;
+    let elapsed = 0;
+    const timer = setInterval(() => {
+      elapsed += interval;
+      const p = Math.min(elapsed / duration, 1);
+      // Ease out
+      setProgress(1 - Math.pow(1 - p, 3));
+      if (p >= 1) {
+        clearInterval(timer);
+        setTimeout(() => setPhase('reveal'), 400);
+      }
+    }, interval);
+    return () => clearInterval(timer);
+  }, [phase]);
+
+  // Repeating twitch every 10s on the unlock button
+  useEffect(() => {
+    if (phase !== 'reveal') return;
+    const doTwitch = () => {
+      if (buttonRef.current) {
+        buttonRef.current.classList.remove('animate-twitch');
+        // Force reflow
+        void buttonRef.current.offsetWidth;
+        buttonRef.current.classList.add('animate-twitch');
+      }
+    };
+    // Initial twitch after 1s
+    const initialTimeout = setTimeout(doTwitch, 1000);
+    // Then every 10s
+    const interval = setInterval(doTwitch, 10000);
+    return () => {
+      clearTimeout(initialTimeout);
+      clearInterval(interval);
+    };
+  }, [phase]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (name.trim() && email.trim() && phone.trim()) {
       setSubmitting(true);
-      const updatedData = { 
-        fullName: name.trim(), 
-        email: email.trim(), 
-        phone: phone.trim() 
+      const updatedData = {
+        fullName: name.trim(),
+        email: email.trim(),
+        phone: phone.trim()
       };
       updateFormData(updatedData);
 
@@ -177,168 +192,194 @@ export default function StepQuote({ formData, updateFormData, onNext, onBack }: 
       existingLeads.push(lead);
       localStorage.setItem('calc-leads', JSON.stringify(existingLeads));
 
-      // POST to Google Sheets webhook, then redirect
       try {
         await submitCalcLead(lead);
       } catch {
-        // Don't block redirect on failure
+        // Don't block redirect
       }
       router.push('/success');
     }
   };
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const formatted = formatPhone(e.target.value);
-    setPhone(formatted);
+    setPhone(formatPhone(e.target.value));
   };
 
   const moveSizeLabel = {
     'studio': 'Studio/Room',
     '1bed': '1 Bedroom',
+    '1br': '1 Bedroom',
     '2bed': '2 Bedroom',
+    '2br': '2 Bedrooms',
     '3bed': '3 Bedroom',
+    '3br': '3+ Bedrooms',
     '4bed': '4+ Bedroom',
+    'storage': 'Storage / Other',
   }[formData.moveSize] || formData.moveSize;
 
-  const moveDate = formData.notSureDate 
-    ? 'Flexible' 
-    : formData.moveDate 
+  const moveDate = formData.notSureDate
+    ? 'Flexible'
+    : formData.moveDate
       ? new Date(formData.moveDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
       : 'TBD';
 
-  return (
-    <div className="relative">
-      {/* Background content (blurred) */}
-      <div className={`transition-all duration-500 ${isVisible ? 'blur-sm scale-[0.98] opacity-60' : ''}`}>
-        <div className="bg-white rounded-xl shadow-lg shadow-slate-200/40 overflow-hidden border border-slate-200">
-          {/* Quote Summary Header */}
-          <div className="bg-gradient-to-br from-slate-800 to-slate-900 text-white p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <Zap className="w-5 h-5 text-amber-400" />
-              <span className="text-sm font-medium text-slate-300">Your Instant Estimate</span>
-            </div>
-            
-            {/* Distance */}
-            <div className="text-4xl font-bold mb-4">
-              {distance.toLocaleString()} <span className="text-lg font-normal text-slate-400">miles</span>
-            </div>
-            
-            {/* Route */}
-            <div className="flex items-center gap-3 text-sm mb-4">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                <span className="text-slate-300">{formData.fromCity}</span>
-              </div>
-              <ArrowRight className="w-4 h-4 text-slate-500" />
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-emerald-400 rounded-full"></div>
-                <span className="text-slate-300">{formData.toCity}</span>
-              </div>
-            </div>
+  // Calculating phase
+  if (phase === 'calculating') {
+    return (
+      <div className="bg-white rounded-xl shadow-lg shadow-slate-200/40 p-8 border border-slate-200">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-slate-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-6"></div>
+          <h2 className="text-2xl font-bold text-slate-900 mb-2">
+            Calculating your estimate...
+          </h2>
+          <p className="text-slate-500 text-sm mb-6">
+            Analyzing routes, rates, and available discounts
+          </p>
 
-            {/* Move details */}
-            <div className="flex gap-4 text-sm text-slate-400">
-              <div className="flex items-center gap-1.5">
-                <Package className="w-4 h-4" />
-                <span>{moveSizeLabel}</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <Calendar className="w-4 h-4" />
-                <span>{moveDate}</span>
-              </div>
+          {/* Progress bar */}
+          <div className="max-w-xs mx-auto">
+            <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-blue-600 rounded-full transition-all duration-100"
+                style={{ width: `${progress * 100}%` }}
+              />
             </div>
-
-            {/* Discount badge */}
-            <div className="mt-4 inline-flex items-center gap-2 bg-emerald-500/20 text-emerald-400 px-3 py-1.5 rounded-full text-sm font-medium">
-              <Tag className="w-4 h-4" />
-              Save ${discount} — Limited Time Offer
-            </div>
+            <p className="text-xs text-slate-400 mt-2">{Math.round(progress * 100)}%</p>
           </div>
 
-          {/* Placeholder content */}
-          <div className="p-6 space-y-4">
-            <div className="h-12 bg-slate-100 rounded-xl"></div>
-            <div className="h-12 bg-slate-100 rounded-xl"></div>
-            <div className="h-12 bg-slate-100 rounded-xl"></div>
-            <div className="h-14 bg-slate-200 rounded-xl"></div>
+          {/* Details being "processed" */}
+          <div className="mt-6 space-y-2 text-sm text-slate-400">
+            <p className={`transition-opacity duration-300 ${progress > 0.1 ? 'opacity-100' : 'opacity-0'}`}>
+              ✓ Route: {formData.fromCity} → {formData.toCity}
+            </p>
+            <p className={`transition-opacity duration-300 ${progress > 0.35 ? 'opacity-100' : 'opacity-0'}`}>
+              ✓ Move size: {moveSizeLabel}
+            </p>
+            <p className={`transition-opacity duration-300 ${progress > 0.6 ? 'opacity-100' : 'opacity-0'}`}>
+              ✓ Checking mover availability...
+            </p>
+            <p className={`transition-opacity duration-300 ${progress > 0.85 ? 'opacity-100' : 'opacity-0'}`}>
+              ✓ Applying available discounts...
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Reveal phase — estimate + unlock form
+  return (
+    <div className="bg-white rounded-xl shadow-lg shadow-slate-200/40 border border-slate-200 overflow-hidden">
+      {/* Estimate summary */}
+      <div className="p-6 border-b border-slate-100">
+        <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">Your Estimate</p>
+
+        {/* Distance */}
+        <div className="flex items-baseline gap-2 mb-4">
+          <span className="text-3xl font-bold text-slate-900">{distance.toLocaleString()}</span>
+          <span className="text-slate-400 text-sm">miles</span>
+        </div>
+
+        {/* Route */}
+        <div className="flex items-center gap-2 text-sm text-slate-600 mb-1">
+          <MapPin className="w-3.5 h-3.5 text-slate-400" />
+          <span>{formData.fromCity}</span>
+          <ArrowRight className="w-3.5 h-3.5 text-slate-300" />
+          <span>{formData.toCity}</span>
+        </div>
+
+        {/* Details row */}
+        <div className="flex gap-4 text-xs text-slate-400 mt-2">
+          <span className="flex items-center gap-1"><Package className="w-3 h-3" />{moveSizeLabel}</span>
+          <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{moveDate}</span>
+        </div>
+      </div>
+
+      {/* Pricing (blurred) */}
+      <div className="p-6 border-b border-slate-100 space-y-3">
+        {/* Original estimate */}
+        <div className="flex items-center justify-between">
+          <span className="text-sm text-slate-500">Original estimate</span>
+          <span className="text-sm text-slate-400 blur-sm select-none">${baseEstimate.toLocaleString()}</span>
+        </div>
+
+        {/* Discount */}
+        <div className="flex items-center justify-between">
+          <span className="text-sm text-slate-500">Available mover discounts</span>
+          <span className="text-sm font-semibold text-red-500">-${discount}</span>
+        </div>
+
+        {/* Divider */}
+        <div className="border-t border-slate-100 pt-3">
+          <div className="flex items-center justify-between">
+            <span className="text-base font-semibold text-slate-800">Final price</span>
+            <div className="flex items-center gap-2">
+              <span className="text-lg font-bold text-slate-800 blur-sm select-none">
+                ${(baseEstimate - discount).toLocaleString()}
+              </span>
+              <Lock className="w-4 h-4 text-slate-400" />
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Popup form (floating on top) */}
-      <div 
-        className={`absolute inset-0 flex items-center justify-center p-4 transition-all duration-500 ${
-          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-        }`}
-      >
-        <div className="bg-white rounded-lg shadow-2xl border border-slate-200 p-6 w-full max-w-sm">
-          <div className="text-center mb-5">
-            <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg flex items-center justify-center mx-auto mb-4 shadow-lg shadow-emerald-500/30">
-              <Lock className="w-7 h-7 text-white" />
-            </div>
-            <h3 className="text-xl font-bold text-slate-900 mb-1">Unlock Your Quote</h3>
-            <p className="text-slate-500 text-sm">
-              Enter your details to see your personalized moving estimate
-            </p>
-          </div>
+      {/* Unlock form */}
+      <div className="p-6">
+        <p className="text-center text-sm font-semibold text-slate-700 mb-4">
+          One last step — unlock your quote
+        </p>
 
-          <form onSubmit={handleSubmit} className="space-y-3">
-            <div>
-              <input
-                type="text"
-                placeholder="Full Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl focus:border-blue-500 focus:bg-white outline-none transition-all text-slate-800 placeholder:text-slate-400"
-                required
-              />
-            </div>
-            
-            <div>
-              <input
-                type="email"
-                placeholder="Email Address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl focus:border-blue-500 focus:bg-white outline-none transition-all text-slate-800 placeholder:text-slate-400"
-                required
-              />
-            </div>
-            
-            <div>
-              <input
-                type="tel"
-                placeholder="Phone Number"
-                value={phone}
-                onChange={handlePhoneChange}
-                className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl focus:border-blue-500 focus:bg-white outline-none transition-all text-slate-800 placeholder:text-slate-400"
-                required
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl transition-all duration-200 shadow-md shadow-blue-500/20 flex items-center justify-center gap-2"
-            >
-              <Lock className="w-5 h-5" />
-              Unlock My Quote
-            </button>
-          </form>
-
-          <p className="text-center text-xs text-slate-400 mt-4 leading-relaxed">
-            By submitting, you agree to our{' '}
-            <a href="/terms" className="text-blue-500 hover:underline">Terms</a>
-            {' '}and{' '}
-            <a href="/privacy" className="text-blue-500 hover:underline">Privacy Policy</a>.
-          </p>
+        <form onSubmit={handleSubmit} className="space-y-3">
+          <input
+            type="text"
+            placeholder="Full Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:border-blue-500 focus:bg-white outline-none transition-all text-slate-800 placeholder:text-slate-400"
+            required
+          />
+          <input
+            type="email"
+            placeholder="Email Address"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:border-blue-500 focus:bg-white outline-none transition-all text-slate-800 placeholder:text-slate-400"
+            required
+          />
+          <input
+            type="tel"
+            placeholder="Phone Number"
+            value={phone}
+            onChange={handlePhoneChange}
+            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:border-blue-500 focus:bg-white outline-none transition-all text-slate-800 placeholder:text-slate-400"
+            required
+          />
 
           <button
-            onClick={onBack}
-            className="w-full mt-3 py-2 text-slate-500 hover:text-slate-700 font-medium transition-colors text-sm"
+            ref={buttonRef}
+            type="submit"
+            disabled={submitting}
+            className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-70 text-white font-bold py-4 rounded-lg transition-all duration-200 shadow-md shadow-blue-500/20 flex items-center justify-center gap-2 text-lg"
           >
-            ← Go Back
+            <Lock className="w-5 h-5" />
+            {submitting ? 'Unlocking...' : 'Unlock My Quote'}
           </button>
-        </div>
+        </form>
+
+        <p className="text-center text-xs text-slate-400 mt-4 leading-relaxed">
+          By submitting, you agree to our{' '}
+          <a href="/terms" className="text-blue-500 hover:underline">Terms of Service</a>
+          {' '}and{' '}
+          <a href="/privacy" className="text-blue-500 hover:underline">Privacy Policy</a>
+          {' '}and consent to be contacted by phone or text by us and our moving partners regarding your moving estimate. Message &amp; data rates may apply.
+        </p>
+
+        <button
+          onClick={onBack}
+          className="w-full mt-3 py-2 text-slate-500 hover:text-slate-700 font-medium transition-colors text-sm"
+        >
+          ← Go Back
+        </button>
       </div>
     </div>
   );

@@ -5,17 +5,17 @@ import { Star } from 'lucide-react';
 const reviews = [
   {
     text: "The team was professional and efficient. Made our cross-country move stress-free!",
-    author: "Sarah T.",
+    author: "David L.",
     route: "California → Texas",
   },
   {
     text: "Accurate quote, on-time pickup and delivery. Couldn't ask for more.",
-    author: "Michael R.",
+    author: "Amanda W.",
     route: "New York → Florida",
   },
   {
     text: "Excellent service from start to finish. The movers were careful with all our belongings.",
-    author: "Jennifer K.",
+    author: "Chris M.",
     route: "Florida → Texas",
   }
 ];

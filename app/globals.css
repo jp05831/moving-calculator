@@ -73,7 +73,11 @@ input:focus, button:focus {
 }
 
 .animate-twitch {
-  animation: twitch 0.5s ease-in-out 1.2s 1;
+  animation: twitch 0.5s ease-in-out 1s 1;
+}
+
+.animate-twitch-repeat {
+  animation: twitch 0.5s ease-in-out 1s 1, twitch 0.5s ease-in-out 10s infinite;
 }
 
 /* Gradient text */
