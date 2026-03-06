@@ -39,8 +39,12 @@ export default function Home() {
   const nextStep = () => setStep(prev => prev + 1);
   const prevStep = () => setStep(prev => prev - 1);
 
+  const showQuoteModal = step === 5;
+
   const renderStep = () => {
-    switch (step) {
+    // When quote modal is showing, render step 4 behind it
+    const displayStep = showQuoteModal ? 4 : step;
+    switch (displayStep) {
       case 1:
         return (
           <StepFrom 
@@ -80,15 +84,6 @@ export default function Home() {
             quotesRequested={quotesRequested}
           />
         );
-      case 5:
-        return (
-          <StepQuote 
-            formData={formData} 
-            updateFormData={updateFormData} 
-            onNext={nextStep}
-            onBack={prevStep}
-          />
-        );
       case 6:
         return <StepThankYou formData={formData} />;
       default:
@@ -109,9 +104,9 @@ export default function Home() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-xl mx-auto px-4 py-8">
+      <main className={`max-w-xl mx-auto px-4 py-8 transition-all duration-300 ${showQuoteModal ? 'blur-sm brightness-50 pointer-events-none select-none' : ''}`}>
         {/* Progress indicator */}
-        {step < 6 && (
+        {step <= 5 && step !== 6 && (
           <div className="mb-8">
             {/* Step labels */}
             <div className="flex justify-between mb-3 px-1">
@@ -133,7 +128,7 @@ export default function Home() {
                 <motion.div
                   className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full"
                   initial={{ width: 0 }}
-                  animate={{ width: `${(step / 5) * 100}%` }}
+                  animate={{ width: `${((showQuoteModal ? 5 : step) / 5) * 100}%` }}
                   transition={{ duration: 0.4, ease: "easeOut" }}
                 />
               </div>
@@ -145,8 +140,8 @@ export default function Home() {
                     key={s}
                     initial={{ scale: 0.8 }}
                     animate={{ 
-                      scale: s === step ? 1.2 : 1,
-                      backgroundColor: s <= step ? '#2563eb' : '#e2e8f0'
+                      scale: s === (showQuoteModal ? 5 : step) ? 1.2 : 1,
+                      backgroundColor: s <= (showQuoteModal ? 5 : step) ? '#2563eb' : '#e2e8f0'
                     }}
                     className={`w-4 h-4 rounded-full border-2 border-white shadow-sm transition-all`}
                   />
@@ -159,7 +154,7 @@ export default function Home() {
         {/* Step Content */}
         <AnimatePresence mode="wait">
           <motion.div
-            key={step}
+            key={showQuoteModal ? 4 : step}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
@@ -170,10 +165,38 @@ export default function Home() {
         </AnimatePresence>
 
         {/* Trust badges */}
-        {step < 6 && <TrustBadges />}
+        {step <= 5 && step !== 6 && <TrustBadges />}
       </main>
 
-      <Footer />
+      {!showQuoteModal && <Footer />}
+
+      {/* Quote Modal Overlay */}
+      <AnimatePresence>
+        {showQuoteModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className="w-full max-w-md my-8"
+            >
+              <StepQuote
+                formData={formData}
+                updateFormData={updateFormData}
+                onNext={nextStep}
+                onBack={prevStep}
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
