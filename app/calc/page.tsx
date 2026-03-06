@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Step components
@@ -40,6 +40,16 @@ export default function Home() {
   const prevStep = () => setStep(prev => prev - 1);
 
   const showQuoteModal = step === 5;
+
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (showQuoteModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [showQuoteModal]);
 
   const renderStep = () => {
     // When quote modal is showing, render step 4 behind it
@@ -104,7 +114,7 @@ export default function Home() {
       </header>
 
       {/* Main Content */}
-      <main className={`max-w-xl mx-auto px-4 py-8 transition-all duration-300 ${showQuoteModal ? 'blur-sm brightness-50 pointer-events-none select-none' : ''}`}>
+      <main className={`max-w-xl mx-auto px-4 py-8 transition-all duration-300 ${showQuoteModal ? 'blur-sm brightness-50 pointer-events-none select-none' : ''}`} aria-hidden={showQuoteModal}>
         {/* Progress indicator */}
         {step <= 5 && step !== 6 && (
           <div className="mb-8">

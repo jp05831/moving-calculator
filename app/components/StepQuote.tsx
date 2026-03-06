@@ -294,11 +294,14 @@ export default function StepQuote({ formData, updateFormData, onNext, onBack }: 
             <span className="text-base font-semibold text-slate-800">
               Final price:
             </span>
-            <div className="relative inline-flex items-center">
-              <span className="text-lg font-bold text-slate-800 blur-sm select-none">
-                ${(baseEstimate - discount).toLocaleString()}
-              </span>
-              <Lock className="w-5 h-5 text-slate-400 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
+            <div className="flex items-center gap-1">
+              <span className="text-lg font-bold text-slate-800">$</span>
+              <div className="relative inline-flex items-center">
+                <span className="text-lg font-bold text-slate-800 blur-sm select-none">
+                  {(baseEstimate - discount).toLocaleString()}
+                </span>
+                <Lock className="w-5 h-5 text-slate-400 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
+              </div>
             </div>
           </div>
         </div>
@@ -306,8 +309,11 @@ export default function StepQuote({ formData, updateFormData, onNext, onBack }: 
 
       {/* Unlock form */}
       <div className="p-6">
-        <p className="text-center text-lg font-bold text-slate-800 mb-5">
+        <p className="text-center text-lg font-bold text-slate-800 mb-1">
           One Last Step!
+        </p>
+        <p className="text-center text-sm text-slate-500 mb-5">
+          Enter your contact information to get your complete moving quote with all available discounts.
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-3">
