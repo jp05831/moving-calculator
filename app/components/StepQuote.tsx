@@ -151,7 +151,7 @@ export default function StepQuote({ formData, updateFormData, onNext, onBack }: 
       const lead = {
         ...formData,
         ...updatedData,
-        distance,
+        distance: distance ?? 0,
         submittedAt: new Date().toISOString(),
       };
       const existingLeads = JSON.parse(localStorage.getItem('calc-leads') || '[]');

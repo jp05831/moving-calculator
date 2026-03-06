@@ -42,7 +42,8 @@ export default function Leads() {
     }
   };
 
-  const exportCSV = (data: (CalcLead | AvailabilityLead)[], filename: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const exportCSV = (data: any[], filename: string) => {
     if (data.length === 0) return;
     const headers = Object.keys(data[0]);
     const csv = [
