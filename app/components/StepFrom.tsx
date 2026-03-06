@@ -24,10 +24,10 @@ export default function StepFrom({ formData, updateFormData, onNext, quotesReque
   };
 
   return (
-    <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/50 p-8 border border-slate-100">
+    <div className="bg-white rounded-xl shadow-lg shadow-slate-200/40 p-8 border border-slate-200">
       {/* Badge */}
       <div className="flex justify-center mb-6">
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-50 text-blue-700 text-sm font-medium rounded-full">
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 text-blue-600 text-sm font-medium">
           <Sparkles className="w-4 h-4" />
           Instant Quote Calculator
         </span>
@@ -63,25 +63,24 @@ export default function StepFrom({ formData, updateFormData, onNext, quotesReque
 
         <button
           type="submit"
-          disabled={!city.trim()}
-          className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:from-slate-300 disabled:to-slate-300 disabled:cursor-not-allowed text-white font-semibold py-4 rounded-2xl transition-all duration-200 text-lg shadow-lg shadow-blue-500/25 disabled:shadow-none"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 rounded-lg transition-all duration-200 text-lg shadow-md shadow-blue-500/20 animate-twitch"
         >
           Continue →
         </button>
       </form>
 
       {/* Mini trust badges */}
-      <div className="flex flex-wrap justify-center gap-4 mt-8 pt-6 border-t border-slate-100">
-        <div className="flex items-center gap-1.5 text-sm text-slate-600">
-          <Shield className="w-4 h-4 text-emerald-500" />
+      <div className="flex flex-wrap justify-center gap-5 mt-8 pt-6 border-t border-slate-100">
+        <div className="flex items-center gap-1.5 text-xs text-slate-500">
+          <Shield className="w-3.5 h-3.5 text-slate-400" />
           <span>Licensed & Insured</span>
         </div>
-        <div className="flex items-center gap-1.5 text-sm text-slate-600">
-          <Star className="w-4 h-4 text-amber-500" />
+        <div className="flex items-center gap-1.5 text-xs text-slate-500">
+          <Star className="w-3.5 h-3.5 text-slate-400" />
           <span>Top Rated</span>
         </div>
-        <div className="flex items-center gap-1.5 text-sm text-slate-600">
-          <BadgeCheck className="w-4 h-4 text-blue-500" />
+        <div className="flex items-center gap-1.5 text-xs text-slate-500">
+          <BadgeCheck className="w-3.5 h-3.5 text-slate-400" />
           <span>Price Guarantee</span>
         </div>
       </div>

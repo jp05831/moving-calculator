@@ -32,7 +32,7 @@ export default function StepSize({ formData, updateFormData, onNext, onBack, quo
   };
 
   return (
-    <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/50 p-8 border border-slate-100">
+    <div className="bg-white rounded-xl shadow-lg shadow-slate-200/40 p-8 border border-slate-200">
       <div className="text-center mb-8">
         <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-3 tracking-tight">
           What size is your move?
@@ -50,7 +50,7 @@ export default function StepSize({ formData, updateFormData, onNext, onBack, quo
             <button
               key={option.id}
               onClick={() => handleSelect(option.id)}
-              className={`relative p-5 rounded-2xl text-left transition-all duration-200 border-2 group ${
+              className={`relative p-5 rounded-lg text-left transition-all duration-200 border-2 group ${
                 isSelected
                   ? 'border-blue-500 bg-blue-50 shadow-lg shadow-blue-500/10'
                   : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'

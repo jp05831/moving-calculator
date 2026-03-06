@@ -25,9 +25,9 @@ export default function StepTo({ formData, updateFormData, onNext, onBack, quote
   };
 
   return (
-    <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/50 p-8 border border-slate-100">
+    <div className="bg-white rounded-xl shadow-lg shadow-slate-200/40 p-8 border border-slate-200">
       <div className="text-center mb-8">
-        <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-emerald-500/25">
+        <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg flex items-center justify-center mx-auto mb-4 shadow-md shadow-blue-500/20">
           <MapPin className="w-7 h-7 text-white" />
         </div>
         <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-3 tracking-tight">
@@ -39,7 +39,7 @@ export default function StepTo({ formData, updateFormData, onNext, onBack, quote
       </div>
 
       {/* Route summary */}
-      <div className="bg-slate-50 rounded-2xl p-4 mb-6">
+      <div className="bg-slate-50 rounded-lg p-4 mb-6">
         <div className="flex items-center gap-3">
           <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
           <span className="text-slate-700 font-medium">{formData.fromCity}</span>
@@ -72,8 +72,7 @@ export default function StepTo({ formData, updateFormData, onNext, onBack, quote
 
         <button
           type="submit"
-          disabled={!city.trim()}
-          className="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 disabled:from-slate-300 disabled:to-slate-300 disabled:cursor-not-allowed text-white font-semibold py-4 rounded-2xl transition-all duration-200 text-lg shadow-lg shadow-emerald-500/25 disabled:shadow-none"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 rounded-lg transition-all duration-200 text-lg shadow-md shadow-blue-500/20"
         >
           Get My Quote →
         </button>

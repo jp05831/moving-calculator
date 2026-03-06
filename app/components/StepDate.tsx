@@ -113,9 +113,9 @@ export default function StepDate({ formData, updateFormData, onNext, onBack, quo
   };
 
   return (
-    <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/50 p-8 border border-slate-100">
+    <div className="bg-white rounded-xl shadow-lg shadow-slate-200/40 p-8 border border-slate-200">
       <div className="text-center mb-6">
-        <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-500/25">
+        <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mx-auto mb-4 shadow-md shadow-blue-500/20">
           <Calendar className="w-7 h-7 text-white" />
         </div>
         <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-2 tracking-tight">
@@ -127,7 +127,7 @@ export default function StepDate({ formData, updateFormData, onNext, onBack, quo
       </div>
 
       {/* Calendar */}
-      <div className="bg-slate-50 rounded-2xl p-4 mb-6">
+      <div className="bg-slate-50 rounded-lg p-4 mb-6">
         <div className="flex items-center justify-between mb-4">
           <button
             onClick={prevMonth}
@@ -173,7 +173,7 @@ export default function StepDate({ formData, updateFormData, onNext, onBack, quo
         {selectedDate && (
           <button
             onClick={handleContinue}
-            className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-4 rounded-2xl transition-all duration-200 text-lg shadow-lg shadow-blue-500/25"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 rounded-lg transition-all duration-200 text-lg shadow-md shadow-blue-500/20"
           >
             Continue →
           </button>

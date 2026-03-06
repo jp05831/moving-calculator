@@ -210,7 +210,7 @@ export default function StepQuote({ formData, updateFormData, onNext, onBack }: 
     <div className="relative">
       {/* Background content (blurred) */}
       <div className={`transition-all duration-500 ${isVisible ? 'blur-sm scale-[0.98] opacity-60' : ''}`}>
-        <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/50 overflow-hidden border border-slate-100">
+        <div className="bg-white rounded-xl shadow-lg shadow-slate-200/40 overflow-hidden border border-slate-200">
           {/* Quote Summary Header */}
           <div className="bg-gradient-to-br from-slate-800 to-slate-900 text-white p-6">
             <div className="flex items-center gap-2 mb-4">
@@ -271,9 +271,9 @@ export default function StepQuote({ formData, updateFormData, onNext, onBack }: 
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
         }`}
       >
-        <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 p-6 w-full max-w-sm">
+        <div className="bg-white rounded-lg shadow-2xl border border-slate-200 p-6 w-full max-w-sm">
           <div className="text-center mb-5">
-            <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-emerald-500/30">
+            <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg flex items-center justify-center mx-auto mb-4 shadow-lg shadow-emerald-500/30">
               <Lock className="w-7 h-7 text-white" />
             </div>
             <h3 className="text-xl font-bold text-slate-900 mb-1">Unlock Your Quote</h3>
@@ -318,7 +318,7 @@ export default function StepQuote({ formData, updateFormData, onNext, onBack }: 
 
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-bold py-3.5 rounded-xl transition-all duration-200 shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl transition-all duration-200 shadow-md shadow-blue-500/20 flex items-center justify-center gap-2"
             >
               <Lock className="w-5 h-5" />
               Unlock My Quote

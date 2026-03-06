@@ -1,60 +1,53 @@
 'use client';
 
-import { Star, Quote } from 'lucide-react';
+import { Star } from 'lucide-react';
 
 const reviews = [
   {
     text: "The team was professional and efficient. Made our cross-country move stress-free!",
     author: "Sarah T.",
     route: "California → Texas",
-    rating: 5
   },
   {
     text: "Accurate quote, on-time pickup and delivery. Couldn't ask for more.",
     author: "Michael R.",
     route: "New York → Florida",
-    rating: 5
   },
   {
     text: "Excellent service from start to finish. The movers were careful with all our belongings.",
     author: "Jennifer K.",
     route: "Florida → Texas",
-    rating: 5
   }
 ];
 
 export default function TrustBadges() {
   return (
-    <div className="mt-12">
+    <div className="mt-14">
       {/* Rating summary */}
-      <div className="text-center mb-8">
-        <div className="flex items-center justify-center gap-1 mb-2">
+      <div className="flex items-center justify-center gap-3 mb-8">
+        <div className="flex gap-0.5">
           {[1, 2, 3, 4, 5].map((i) => (
-            <Star
-              key={i}
-              className="w-6 h-6 text-amber-400 fill-amber-400"
-            />
+            <Star key={i} className="w-5 h-5 text-amber-400 fill-amber-400" />
           ))}
         </div>
-        <p className="text-slate-600">
-          <span className="font-bold text-slate-900">4.8/5</span> from <span className="font-semibold">12,800+</span> reviews
-        </p>
+        <span className="text-sm text-slate-500">
+          <span className="font-semibold text-slate-700">4.8</span> from 12,800+ reviews
+        </span>
       </div>
 
       {/* Reviews */}
-      <div className="space-y-4 mb-8">
+      <div className="space-y-3 mb-10">
         {reviews.map((review, i) => (
-          <div key={i} className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
-            <Quote className="w-8 h-8 text-slate-200 mb-2" />
-            <p className="text-slate-700 mb-3">{review.text}</p>
+          <div key={i} className="border border-slate-200 rounded-lg p-5">
+            <p className="text-slate-600 text-sm leading-relaxed mb-3">&ldquo;{review.text}&rdquo;</p>
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-semibold text-slate-900">{review.author}</p>
-                <p className="text-sm text-slate-500">{review.route}</p>
+                <p className="text-sm font-medium text-slate-800">{review.author}</p>
+                <p className="text-xs text-slate-400">{review.route}</p>
               </div>
               <div className="flex gap-0.5">
-                {[...Array(review.rating)].map((_, j) => (
-                  <Star key={j} className="w-4 h-4 text-amber-400 fill-amber-400" />
+                {[1, 2, 3, 4, 5].map((j) => (
+                  <Star key={j} className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
                 ))}
               </div>
             </div>
@@ -63,24 +56,16 @@ export default function TrustBadges() {
       </div>
 
       {/* Trust badges */}
-      <div className="flex flex-wrap justify-center gap-3 mb-6">
-        <span className="bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-100 text-sm font-medium text-slate-600">
-          🏆 Member AMSA
-        </span>
-        <span className="bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-100 text-sm font-medium text-slate-600">
-          ✓ Certified ProMover
-        </span>
-        <span className="bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-100 text-sm font-medium text-slate-600">
-          A+ BBB Rated
-        </span>
+      <div className="flex justify-center gap-6 mb-6 text-sm text-slate-500">
+        <span>🏆 AMSA Member</span>
+        <span>✓ Certified ProMover</span>
+        <span>A+ BBB Rated</span>
       </div>
 
       {/* Guarantee */}
-      <div className="bg-gradient-to-r from-emerald-50 to-blue-50 rounded-2xl p-4 text-center border border-emerald-100">
-        <p className="text-slate-700">
-          <span className="font-bold text-emerald-700">100% Satisfaction Guarantee</span>
-          <br />
-          <span className="text-sm text-slate-600">If you&apos;re not completely satisfied, we&apos;ll make it right.</span>
+      <div className="border-t border-slate-100 pt-6 text-center">
+        <p className="text-sm text-slate-500">
+          <span className="font-medium text-slate-700">100% Satisfaction Guarantee</span> — If you&apos;re not completely satisfied, we&apos;ll make it right.
         </p>
       </div>
     </div>

@@ -81,7 +81,7 @@ export default function CityAutocomplete({ value, onChange, placeholder, autoFoc
           placeholder={placeholder}
           defaultValue={value}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full pl-12 pr-4 py-4 bg-slate-50 border-2 border-slate-200 rounded-2xl text-lg focus:border-blue-500 focus:bg-white focus:shadow-lg focus:shadow-blue-500/10 outline-none transition-all text-slate-800 placeholder:text-slate-400"
+          className="w-full pl-12 pr-4 py-4 bg-slate-50 border-2 border-slate-200 rounded-lg text-lg focus:border-blue-500 focus:bg-white focus:shadow-md outline-none transition-all text-slate-800 placeholder:text-slate-400"
         />
       </div>
     </div>

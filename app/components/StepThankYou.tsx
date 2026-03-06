@@ -9,7 +9,7 @@ interface Props {
 
 export default function StepThankYou({ formData }: Props) {
   return (
-    <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/50 p-8 border border-slate-100 text-center">
+    <div className="bg-white rounded-xl shadow-lg shadow-slate-200/40 p-8 border border-slate-200 text-center">
       {/* Success animation */}
       <div className="relative mb-6">
         <div className="w-24 h-24 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-lg shadow-emerald-500/30">
@@ -29,7 +29,7 @@ export default function StepThankYou({ formData }: Props) {
       </p>
 
       {/* What's next */}
-      <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl p-6 text-left">
+      <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-lg p-6 text-left">
         <h3 className="font-semibold text-slate-900 mb-4 text-center">What happens next?</h3>
         <div className="space-y-4">
           <div className="flex items-start gap-4">
