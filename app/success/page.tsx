@@ -1,6 +1,6 @@
 'use client';
 
-import { CheckCircle, Search, MessageSquare } from 'lucide-react';
+import { CheckCircle, Search, MessageSquare, PartyPopper, CheckCheck } from 'lucide-react';
 import Footer from '../components/Footer';
 
 export default function Success() {
@@ -23,6 +23,9 @@ export default function Success() {
           <div className="relative mb-6 inline-block">
             <div className="w-24 h-24 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-lg shadow-emerald-500/30">
               <CheckCircle className="w-12 h-12 text-white" />
+            </div>
+            <div className="absolute -top-2 -right-2 w-10 h-10 bg-amber-400 rounded-full flex items-center justify-center shadow-lg animate-bounce">
+              <PartyPopper className="w-5 h-5 text-white" />
             </div>
           </div>
 
@@ -54,13 +57,29 @@ export default function Success() {
                   <MessageSquare className="w-5 h-5 text-amber-600" />
                 </div>
                 <div>
-                  <div className="font-medium text-slate-900">Confirm &amp; Estimate</div>
+                  <div className="font-medium text-slate-900">Quote Confirmation</div>
                   <div className="text-sm text-slate-500">
                     A moving specialist may reach out to confirm details and provide your estimate.
                   </div>
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Trust line */}
+          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 mt-6 text-sm text-slate-500">
+            <span className="flex items-center gap-1.5">
+              <CheckCheck className="w-4 h-4 text-emerald-500" />
+              No obligation
+            </span>
+            <span className="flex items-center gap-1.5">
+              <CheckCheck className="w-4 h-4 text-emerald-500" />
+              Licensed movers only
+            </span>
+            <span className="flex items-center gap-1.5">
+              <CheckCheck className="w-4 h-4 text-emerald-500" />
+              Free quote
+            </span>
           </div>
 
           <a
