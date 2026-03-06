@@ -144,10 +144,10 @@ export default function CheckAvailability() {
               <MapPin className="w-8 h-8 text-white" />
             </div>
             <h2 className="text-3xl font-bold mb-3">
-              Check Mover Availability Near You
+              Check If Movers Are Available For Your Move Date
             </h2>
             <p className="text-blue-100 text-lg max-w-md mx-auto">
-              See if movers are available for your move date in your area.
+              Enter your move details and we&apos;ll check availability and connect you with the best option for your move.
             </p>
           </div>
 
@@ -207,7 +207,11 @@ export default function CheckAvailability() {
                 required
               />
               <label htmlFor="consent" className="text-sm text-slate-600 cursor-pointer leading-relaxed">
-                By submitting this form you agree to be contacted regarding your moving request by local moving companies.
+                By submitting, you agree to our{' '}
+                <a href="/terms" className="text-blue-600 hover:underline">Terms of Service</a>{' '}
+                and{' '}
+                <a href="/privacy" className="text-blue-600 hover:underline">Privacy Policy</a>{' '}
+                and consent to be contacted by phone or text by us and our moving partners regarding mover availability and your moving request. Message &amp; data rates may apply.
               </label>
             </div>
 
