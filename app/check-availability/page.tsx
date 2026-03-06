@@ -147,7 +147,7 @@ export default function CheckAvailability() {
               Check If Movers Are Available For Your Move Date
             </h2>
             <p className="text-blue-100 text-lg max-w-md mx-auto">
-              Enter your move details and we&apos;ll check availability and connect you with the best option for your move.
+              Enter your move details and we&apos;ll connect you with the best option available.
             </p>
           </div>
 
