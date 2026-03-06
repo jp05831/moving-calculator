@@ -83,7 +83,7 @@ export default function Success() {
           </div>
 
           <a
-            href="/calc"
+            href="/moving-calculator"
             className="inline-block mt-8 text-blue-600 hover:text-blue-800 font-medium transition-colors"
           >
             Get a detailed moving quote →

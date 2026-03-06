@@ -7,7 +7,7 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    router.replace('/calc');
+    router.replace('/moving-calculator');
   }, [router]);
 
   return null;

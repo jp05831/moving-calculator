@@ -2,14 +2,84 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { MapPin, Calendar, Phone, CheckCircle } from 'lucide-react';
+import { MapPin, Calendar, Phone, CheckCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 import { submitAvailabilityLead } from '../submit';
 import Footer from '../components/Footer';
 import CityAutocomplete from '../components/CityAutocomplete';
 
+function MiniCalendar({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const [viewDate, setViewDate] = useState(() => {
+    if (value) {
+      const [y, m] = value.split('-').map(Number);
+      return new Date(y, m - 1, 1);
+    }
+    return new Date(today.getFullYear(), today.getMonth(), 1);
+  });
+
+  const year = viewDate.getFullYear();
+  const month = viewDate.getMonth();
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const monthName = viewDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+  const prevMonth = () => setViewDate(new Date(year, month - 1, 1));
+  const nextMonth = () => setViewDate(new Date(year, month + 1, 1));
+
+  const days = [];
+  for (let i = 0; i < firstDay; i++) days.push(null);
+  for (let d = 1; d <= daysInMonth; d++) days.push(d);
+
+  const selectedStr = value;
+  const fmt = (d: number) =>
+    `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+
+  const isPast = (d: number) => new Date(year, month, d) < today;
+
+  return (
+    <div className="bg-slate-50 border-2 border-slate-200 rounded-xl p-4 focus-within:border-blue-500 transition-all">
+      <div className="flex items-center justify-between mb-3">
+        <button type="button" onClick={prevMonth} className="p-1.5 hover:bg-slate-200 rounded-lg transition-colors">
+          <ChevronLeft className="w-4 h-4 text-slate-600" />
+        </button>
+        <span className="text-sm font-semibold text-slate-800">{monthName}</span>
+        <button type="button" onClick={nextMonth} className="p-1.5 hover:bg-slate-200 rounded-lg transition-colors">
+          <ChevronRight className="w-4 h-4 text-slate-600" />
+        </button>
+      </div>
+      <div className="grid grid-cols-7 gap-1 text-center">
+        {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((d) => (
+          <div key={d} className="text-[10px] font-medium text-slate-400 py-1">{d}</div>
+        ))}
+        {days.map((d, i) =>
+          d === null ? (
+            <div key={`e-${i}`} />
+          ) : (
+            <button
+              key={d}
+              type="button"
+              disabled={isPast(d)}
+              onClick={() => onChange(fmt(d))}
+              className={`text-sm py-1.5 rounded-lg transition-all ${
+                fmt(d) === selectedStr
+                  ? 'bg-blue-600 text-white font-semibold shadow-sm'
+                  : isPast(d)
+                    ? 'text-slate-300 cursor-not-allowed'
+                    : 'text-slate-700 hover:bg-blue-50 hover:text-blue-700'
+              }`}
+            >
+              {d}
+            </button>
+          )
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function CheckAvailability() {
   const router = useRouter();
-  const [zip, setZip] = useState('');
   const [location, setLocation] = useState('');
   const [moveDate, setMoveDate] = useState('');
   const [phone, setPhone] = useState('');
@@ -29,12 +99,12 @@ export default function CheckAvailability() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!consent) return;
+    if (!consent || !moveDate) return;
 
     setSubmitting(true);
 
     const lead = {
-      zip: zip.trim(),
+      zip: '',
       location: location.trim(),
       moveDate,
       phone: phone.trim(),
@@ -45,11 +115,10 @@ export default function CheckAvailability() {
     existingLeads.push(lead);
     localStorage.setItem('availability-leads', JSON.stringify(existingLeads));
 
-    // POST to Google Sheets webhook, then redirect
     try {
       await submitAvailabilityLead(lead);
     } catch {
-      // Don't block redirect on failure
+      // Don't block redirect
     }
     router.push('/success');
   };
@@ -96,23 +165,6 @@ export default function CheckAvailability() {
               />
             </div>
 
-            {/* Move Date */}
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                Move Date
-              </label>
-              <div className="relative">
-                <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                <input
-                  type="date"
-                  value={moveDate}
-                  onChange={(e) => setMoveDate(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border-2 border-slate-200 rounded-xl focus:border-blue-500 focus:bg-white outline-none transition-all text-slate-800 placeholder:text-slate-400"
-                  required
-                />
-              </div>
-            </div>
-
             {/* Phone Number */}
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1.5">
@@ -129,6 +181,19 @@ export default function CheckAvailability() {
                   required
                 />
               </div>
+            </div>
+
+            {/* Move Date - Mini Calendar */}
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                Move Date
+              </label>
+              <MiniCalendar value={moveDate} onChange={setMoveDate} />
+              {moveDate && (
+                <p className="text-xs text-blue-600 font-medium mt-1.5 ml-1">
+                  Selected: {new Date(moveDate + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
+                </p>
+              )}
             </div>
 
             {/* Consent Checkbox */}
@@ -149,7 +214,7 @@ export default function CheckAvailability() {
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={submitting}
+              disabled={submitting || !moveDate}
               className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:opacity-50 text-white font-bold py-4 rounded-xl transition-all duration-200 shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 text-lg"
             >
               <CheckCircle className="w-5 h-5" />
