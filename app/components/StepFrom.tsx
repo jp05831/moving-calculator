@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { FormData } from '../types';
 import { Shield, Star, BadgeCheck } from 'lucide-react';
-import AddressAutocomplete from './AddressAutocomplete';
+import { MapPin } from 'lucide-react';
 
 interface Props {
   formData: FormData;
@@ -13,18 +13,17 @@ interface Props {
 }
 
 export default function StepFrom({ formData, updateFormData, onNext, quotesRequested }: Props) {
-  const [city, setCity] = useState(formData.fromCity);
   const [zip, setZip] = useState(formData.fromZip);
 
-  const handleAddressChange = (value: string, postalCode: string) => {
-    setCity(value);
-    if (postalCode) setZip(postalCode);
+  const handleZipChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const digits = e.target.value.replace(/\D/g, '').slice(0, 5);
+    setZip(digits);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (city.trim()) {
-      updateFormData({ fromCity: city.trim(), fromZip: zip });
+    if (zip.length === 5) {
+      updateFormData({ fromZip: zip, fromCity: zip });
       onNext();
     }
   };
@@ -36,18 +35,26 @@ export default function StepFrom({ formData, updateFormData, onNext, quotesReque
           Calculate Your Moving Cost
         </h2>
         <p className="text-slate-600 text-lg font-medium">
-          Where are you moving from?
+          What&apos;s your current ZIP code?
         </p>
       </div>
 
       <form onSubmit={handleSubmit}>
         <div className="mb-6">
-          <AddressAutocomplete
-            value={city}
-            onChange={handleAddressChange}
-            placeholder="Enter your current address..."
-            autoFocus
-          />
+          <div className="relative">
+            <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
+            <input
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              maxLength={5}
+              placeholder="Enter your ZIP code"
+              value={zip}
+              onChange={handleZipChange}
+              autoFocus
+              className="w-full pl-12 pr-4 py-4 bg-slate-50 border-2 border-slate-200 rounded-lg text-lg focus:border-blue-500 focus:bg-white focus:shadow-md outline-none transition-all text-slate-800 placeholder:text-slate-400"
+            />
+          </div>
         </div>
 
         {/* Live counter */}
@@ -61,7 +68,8 @@ export default function StepFrom({ formData, updateFormData, onNext, quotesReque
 
         <button
           type="submit"
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 rounded-lg transition-all duration-200 text-lg shadow-md shadow-blue-500/20 animate-twitch"
+          disabled={zip.length !== 5}
+          className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-4 rounded-lg transition-all duration-200 text-lg shadow-md shadow-blue-500/20 animate-twitch"
         >
           Continue →
         </button>
