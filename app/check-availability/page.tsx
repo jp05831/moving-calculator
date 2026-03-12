@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { MapPin, Calendar, Phone, CheckCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 import { submitAvailabilityLead } from '../submit';
 import Footer from '../components/Footer';
-import CityAutocomplete from '../components/CityAutocomplete';
+import AddressAutocomplete from '../components/AddressAutocomplete';
 
 function MiniCalendar({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   const today = new Date();
@@ -81,6 +81,7 @@ function MiniCalendar({ value, onChange }: { value: string; onChange: (v: string
 export default function CheckAvailability() {
   const router = useRouter();
   const [location, setLocation] = useState('');
+  const [zip, setZip] = useState('');
   const [moveDate, setMoveDate] = useState('');
   const [phone, setPhone] = useState('');
   const [consent, setConsent] = useState(false);
@@ -104,7 +105,7 @@ export default function CheckAvailability() {
     setSubmitting(true);
 
     const lead = {
-      zip: '',
+      zip: zip,
       location: location.trim(),
       moveDate,
       phone: phone.trim(),
@@ -158,10 +159,13 @@ export default function CheckAvailability() {
               <label className="block text-sm font-medium text-slate-700 mb-1.5">
                 Your Location
               </label>
-              <CityAutocomplete
+              <AddressAutocomplete
                 value={location}
-                onChange={setLocation}
-                placeholder="Enter your city..."
+                onChange={(value, postalCode) => {
+                  setLocation(value);
+                  if (postalCode) setZip(postalCode);
+                }}
+                placeholder="Enter your address..."
               />
             </div>
 

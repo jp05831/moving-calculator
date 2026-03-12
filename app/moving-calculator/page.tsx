@@ -16,6 +16,7 @@ import { FormData } from '../types';
 
 const initialFormData: FormData = {
   fromCity: '',
+  fromZip: '',
   toCity: '',
   moveSize: '',
   moveDate: null,

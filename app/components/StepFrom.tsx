@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { FormData } from '../types';
 import { Shield, Star, BadgeCheck } from 'lucide-react';
-import CityAutocomplete from './CityAutocomplete';
+import AddressAutocomplete from './AddressAutocomplete';
 
 interface Props {
   formData: FormData;
@@ -14,11 +14,17 @@ interface Props {
 
 export default function StepFrom({ formData, updateFormData, onNext, quotesRequested }: Props) {
   const [city, setCity] = useState(formData.fromCity);
+  const [zip, setZip] = useState(formData.fromZip);
+
+  const handleAddressChange = (value: string, postalCode: string) => {
+    setCity(value);
+    if (postalCode) setZip(postalCode);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (city.trim()) {
-      updateFormData({ fromCity: city.trim() });
+      updateFormData({ fromCity: city.trim(), fromZip: zip });
       onNext();
     }
   };
@@ -36,10 +42,10 @@ export default function StepFrom({ formData, updateFormData, onNext, quotesReque
 
       <form onSubmit={handleSubmit}>
         <div className="mb-6">
-          <CityAutocomplete
+          <AddressAutocomplete
             value={city}
-            onChange={setCity}
-            placeholder="Enter your current city..."
+            onChange={handleAddressChange}
+            placeholder="Enter your current address..."
             autoFocus
           />
         </div>

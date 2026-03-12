@@ -1,5 +1,6 @@
 export interface FormData {
   fromCity: string;
+  fromZip: string;
   toCity: string;
   moveSize: string;
   moveDate: string | null;
