@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { MapPin, Calendar, Phone, CheckCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 import { submitAvailabilityLead } from '../submit';
 import Footer from '../components/Footer';
-import AddressAutocomplete from '../components/AddressAutocomplete';
+import { MapPin as MapPinIcon } from 'lucide-react';
 
 function MiniCalendar({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   const today = new Date();
@@ -80,7 +80,6 @@ function MiniCalendar({ value, onChange }: { value: string; onChange: (v: string
 
 export default function CheckAvailability() {
   const router = useRouter();
-  const [location, setLocation] = useState('');
   const [zip, setZip] = useState('');
   const [moveDate, setMoveDate] = useState('');
   const [phone, setPhone] = useState('');
@@ -106,7 +105,7 @@ export default function CheckAvailability() {
 
     const lead = {
       zip: zip,
-      location: location.trim(),
+      location: zip,
       moveDate,
       phone: phone.trim(),
       submittedAt: new Date().toISOString(),
@@ -157,16 +156,22 @@ export default function CheckAvailability() {
             {/* Location */}
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                Your Location
+                Your ZIP Code
               </label>
-              <AddressAutocomplete
-                value={location}
-                onChange={(value, postalCode) => {
-                  setLocation(value);
-                  if (postalCode) setZip(postalCode);
-                }}
-                placeholder="Enter your address..."
-              />
+              <div className="relative">
+                <MapPinIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  maxLength={5}
+                  placeholder="Enter your ZIP code"
+                  value={zip}
+                  onChange={(e) => setZip(e.target.value.replace(/\D/g, '').slice(0, 5))}
+                  className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border-2 border-slate-200 rounded-xl focus:border-blue-500 focus:bg-white outline-none transition-all text-slate-800 placeholder:text-slate-400"
+                  required
+                />
+              </div>
             </div>
 
             {/* Phone Number */}
@@ -222,7 +227,7 @@ export default function CheckAvailability() {
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={submitting || !moveDate}
+              disabled={submitting || !moveDate || zip.length !== 5}
               className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:opacity-50 text-white font-bold py-4 rounded-xl transition-all duration-200 shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 text-lg"
             >
               <CheckCircle className="w-5 h-5" />
