@@ -349,7 +349,7 @@ export default function StepQuote({ formData, updateFormData, onNext, onBack }: 
             className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-70 text-white font-bold py-4 rounded-lg transition-all duration-200 shadow-md shadow-blue-500/20 flex items-center justify-center gap-2 text-lg"
           >
             <Lock className="w-5 h-5" />
-            {submitting ? 'Unlocking...' : 'Unlock My Quote'}
+            {submitting ? 'Unlocking...' : 'Get My Moving Estimate'}
           </button>
         </form>
 
