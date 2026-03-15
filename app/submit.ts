@@ -14,6 +14,8 @@ export async function submitCalcLead(lead: {
 }) {
   await fetch(WEBHOOK_URL, {
     method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain' },
     body: JSON.stringify({
       source: 'calculator',
       name: lead.fullName,
@@ -39,6 +41,8 @@ export async function submitAvailabilityLead(lead: {
 }) {
   await fetch(WEBHOOK_URL, {
     method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain' },
     body: JSON.stringify({
       source: 'availability',
       zip: lead.zip,
