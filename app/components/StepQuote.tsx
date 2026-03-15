@@ -13,8 +13,8 @@ interface Props {
   onBack: () => void;
 }
 
-// Use Google Geocoding to get coordinates, then Haversine for distance
-function geocodeCity(city: string): Promise<{ lat: number; lng: number } | null> {
+// Use Google Geocoding to get coordinates + ZIP, then Haversine for distance
+function geocodeCity(city: string): Promise<{ lat: number; lng: number; zip: string | null } | null> {
   return new Promise((resolve) => {
     if (!window.google?.maps) {
       resolve(null);
@@ -24,7 +24,15 @@ function geocodeCity(city: string): Promise<{ lat: number; lng: number } | null>
     geocoder.geocode({ address: city }, (results, status) => {
       if (status === 'OK' && results && results[0]) {
         const loc = results[0].geometry.location;
-        resolve({ lat: loc.lat(), lng: loc.lng() });
+        // Extract ZIP code from address components
+        let zip: string | null = null;
+        for (const component of results[0].address_components) {
+          if (component.types.includes('postal_code')) {
+            zip = component.short_name;
+            break;
+          }
+        }
+        resolve({ lat: loc.lat(), lng: loc.lng(), zip });
       } else {
         resolve(null);
       }
@@ -66,12 +74,14 @@ export default function StepQuote({ formData, updateFormData, onNext, onBack }: 
   const [phase, setPhase] = useState<'calculating' | 'reveal'>('calculating');
   const [progress, setProgress] = useState(0);
   const [distance, setDistance] = useState<number | null>(null);
+  const [fromZip, setFromZip] = useState<string | null>(null);
+  const [toZip, setToZip] = useState<string | null>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   const discount = 600;
   const baseEstimate = distance ? Math.round((distance * 1.2 + 800) / 50) * 50 : 0;
 
-  // Geocode both cities and calculate real distance
+  // Geocode both cities and calculate real distance + extract ZIPs
   useEffect(() => {
     let cancelled = false;
     async function calc() {
@@ -82,6 +92,8 @@ export default function StepQuote({ formData, updateFormData, onNext, onBack }: 
       if (cancelled) return;
       if (fromCoords && toCoords) {
         setDistance(haversineDistance(fromCoords, toCoords));
+        setFromZip(fromCoords.zip);
+        setToZip(toCoords.zip);
       } else {
         // Fallback
         setDistance(500);
@@ -151,6 +163,8 @@ export default function StepQuote({ formData, updateFormData, onNext, onBack }: 
       const lead = {
         ...formData,
         ...updatedData,
+        fromZip,
+        toZip,
         distance: distance ?? 0,
         submittedAt: new Date().toISOString(),
       };

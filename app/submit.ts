@@ -5,8 +5,9 @@ export async function submitCalcLead(lead: {
   email: string;
   phone: string;
   fromCity: string;
-  fromZip: string;
+  fromZip: string | null;
   toCity: string;
+  toZip: string | null;
   moveSize: string;
   moveDate: string | null;
   distance: number;
@@ -19,8 +20,9 @@ export async function submitCalcLead(lead: {
       email: lead.email,
       phone: lead.phone,
       fromCity: lead.fromCity,
-      fromZip: lead.fromZip,
+      fromZip: lead.fromZip || '',
       toCity: lead.toCity,
+      toZip: lead.toZip || '',
       moveSize: lead.moveSize,
       moveDate: lead.moveDate || 'Flexible',
       distance: String(lead.distance),
