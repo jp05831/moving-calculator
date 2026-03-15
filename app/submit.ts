@@ -18,7 +18,7 @@ export async function submitCalcLead(lead: {
     headers: { 'Content-Type': 'text/plain' },
     body: JSON.stringify({
       source: 'calculator',
-      name: lead.fullName,
+      customerName: lead.fullName,
       email: lead.email,
       phone: lead.phone,
       fromCity: lead.fromCity,
