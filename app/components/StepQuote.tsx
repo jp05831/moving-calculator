@@ -71,6 +71,7 @@ export default function StepQuote({ formData, updateFormData, onNext, onBack }: 
   const [email, setEmail] = useState(formData.email);
   const [phone, setPhone] = useState(formData.phone);
   const [submitting, setSubmitting] = useState(false);
+  const [errors, setErrors] = useState<{ name?: string; email?: string; phone?: string }>({});
   const [phase, setPhase] = useState<'calculating' | 'reveal'>('calculating');
   const [progress, setProgress] = useState(0);
   const [distance, setDistance] = useState<number | null>(null);
@@ -151,10 +152,30 @@ export default function StepQuote({ formData, updateFormData, onNext, onBack }: 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate all fields
+    const newErrors: { name?: string; email?: string; phone?: string } = {};
+    
+    if (!name.trim() || name.trim().length < 2) {
+      newErrors.name = 'Please enter your full name';
+    }
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email.trim() || !emailRegex.test(email.trim())) {
+      newErrors.email = 'Please enter a valid email address';
+    }
+    
     const phoneDigits = phone.replace(/\D/g, '');
-    if (phoneDigits.length < 10) return;
-    if (name.trim() && email.trim() && phone.trim()) {
-      setSubmitting(true);
+    if (phoneDigits.length < 10) {
+      newErrors.phone = 'Please enter a complete 10-digit phone number';
+    }
+    
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+    
+    setSubmitting(true);
       const updatedData = {
         fullName: name.trim(),
         email: email.trim(),
@@ -333,30 +354,39 @@ export default function StepQuote({ formData, updateFormData, onNext, onBack }: 
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-3">
-          <input
-            type="text"
-            placeholder="Full Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:border-blue-500 focus:bg-white outline-none transition-all text-slate-800 placeholder:text-slate-400"
-            required
-          />
-          <input
-            type="email"
-            placeholder="Email Address"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:border-blue-500 focus:bg-white outline-none transition-all text-slate-800 placeholder:text-slate-400"
-            required
-          />
-          <input
-            type="tel"
-            placeholder="Phone Number"
-            value={phone}
-            onChange={handlePhoneChange}
-            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:border-blue-500 focus:bg-white outline-none transition-all text-slate-800 placeholder:text-slate-400"
-            required
-          />
+          <div>
+            <input
+              type="text"
+              placeholder="Full Name"
+              value={name}
+              onChange={(e) => { setName(e.target.value); setErrors(prev => ({ ...prev, name: undefined })); }}
+              className={`w-full px-4 py-3 bg-slate-50 border rounded-lg focus:border-blue-500 focus:bg-white outline-none transition-all text-slate-800 placeholder:text-slate-400 ${errors.name ? 'border-red-400 bg-red-50' : 'border-slate-200'}`}
+              required
+            />
+            {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+          </div>
+          <div>
+            <input
+              type="email"
+              placeholder="Email Address"
+              value={email}
+              onChange={(e) => { setEmail(e.target.value); setErrors(prev => ({ ...prev, email: undefined })); }}
+              className={`w-full px-4 py-3 bg-slate-50 border rounded-lg focus:border-blue-500 focus:bg-white outline-none transition-all text-slate-800 placeholder:text-slate-400 ${errors.email ? 'border-red-400 bg-red-50' : 'border-slate-200'}`}
+              required
+            />
+            {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+          </div>
+          <div>
+            <input
+              type="tel"
+              placeholder="Phone Number"
+              value={phone}
+              onChange={(e) => { handlePhoneChange(e); setErrors(prev => ({ ...prev, phone: undefined })); }}
+              className={`w-full px-4 py-3 bg-slate-50 border rounded-lg focus:border-blue-500 focus:bg-white outline-none transition-all text-slate-800 placeholder:text-slate-400 ${errors.phone ? 'border-red-400 bg-red-50' : 'border-slate-200'}`}
+              required
+            />
+            {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
+          </div>
 
           <button
             ref={buttonRef}
