@@ -201,7 +201,6 @@ export default function StepQuote({ formData, updateFormData, onNext, onBack }: 
         // Don't block redirect
       }
       router.push('/success');
-    }
   };
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
