@@ -1,4 +1,4 @@
-const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbzusWbl4nblHtQSaivygmmvaheefbKPPbVrwiBIYQkkbXGcEUdEOCBRsV6TQhlY_BDH6A/exec';
+const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbwW7MRRUpUDdjBysowSFyLWS8yYbynL9Cxu4MRH33yaIquvssfXlZQT5bg_FVGmsRqfOA/exec';
 
 export async function submitCalcLead(lead: {
   fullName: string;
