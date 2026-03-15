@@ -151,6 +151,8 @@ export default function StepQuote({ formData, updateFormData, onNext, onBack }: 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const phoneDigits = phone.replace(/\D/g, '');
+    if (phoneDigits.length < 10) return;
     if (name.trim() && email.trim() && phone.trim()) {
       setSubmitting(true);
       const updatedData = {
@@ -359,7 +361,7 @@ export default function StepQuote({ formData, updateFormData, onNext, onBack }: 
           <button
             ref={buttonRef}
             type="submit"
-            disabled={submitting}
+            disabled={submitting || phone.replace(/\D/g, '').length < 10}
             className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-70 text-white font-bold py-4 rounded-lg transition-all duration-200 shadow-md shadow-blue-500/20 flex items-center justify-center gap-2 text-lg"
           >
             <Lock className="w-5 h-5" />
