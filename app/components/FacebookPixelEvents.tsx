@@ -28,13 +28,12 @@ export default function FacebookPixelEvents() {
       // Lead fires to specific pixel based on ad source
       const fbSource = sessionStorage.getItem('fb_source');
       
-      if (fbSource === '1') {
-        window.fbq('trackSingle', PIXEL_1, 'Lead');
-      } else if (fbSource === '2') {
+      if (fbSource === '2') {
+        // fb=2 → Pixel 2 only
         window.fbq('trackSingle', PIXEL_2, 'Lead');
       } else {
-        // No source param — fire to both (fallback for organic/direct traffic)
-        window.fbq('track', 'Lead');
+        // No param or any other value → Pixel 1 (default/original)
+        window.fbq('trackSingle', PIXEL_1, 'Lead');
       }
     }
   }, [pathname]);
